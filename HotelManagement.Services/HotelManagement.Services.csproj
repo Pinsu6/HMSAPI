@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
+    <PackageReference Include="QuestPDF" Version="2024.10.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HotelManagement.Business\HotelManagement.Business.csproj" />
+    <ProjectReference Include="..\HotelManagement.Data\HotelManagement.Data.csproj" />
+    <ProjectReference Include="..\HotelManagement.Models\HotelManagement.Models.csproj" />
+    <ProjectReference Include="..\HotelManagement.ViewModels\HotelManagement.ViewModels.csproj" />
+  </ItemGroup>
+
+</Project>
