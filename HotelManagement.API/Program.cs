@@ -30,6 +30,10 @@ using HotelManagement.Services.WiFiLog;
 using HotelManagement.Services.WiFiLog.Interface;
 using HotelManagement.Services.Dashboard;
 using HotelManagement.Services.Dashboard.Interface;
+using HotelManagement.Services.Currency;
+using HotelManagement.Services.Currency.Interface;
+using HotelManagement.Services.AddServices;
+using HotelManagement.Services.AddServices.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -106,6 +110,14 @@ builder.Services.AddScoped<IWiFiLogService, WiFiLogService>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 builder.Services.AddScoped<IDashboardManager, DashboardManager>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+
+builder.Services.AddScoped<ICurrencyRepository, CurrencyRepository>();
+builder.Services.AddScoped<ICurrencyManager, CurrencyManager>();
+builder.Services.AddScoped<ICurrencyService, CurrencyService>();
+
+builder.Services.AddScoped<IAddServicesRepository, AddServicesRepository>();
+builder.Services.AddScoped<IAddServicesManager, AddServicesManager>();
+builder.Services.AddScoped<IAddServicesService, AddServicesService>();
 
 var app = builder.Build();
 
