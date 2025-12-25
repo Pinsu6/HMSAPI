@@ -19,5 +19,10 @@ namespace HotelManagement.Services.User
         {
             return _manager.GetUsers(req);
         }
+
+        public Task<ResponseDto> AddUser(UserReqDto req)
+        {
+            return _manager.AddUser(req);
+        }
     }
 }

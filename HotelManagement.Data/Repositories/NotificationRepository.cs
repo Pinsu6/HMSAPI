@@ -11,16 +11,22 @@ using HotelManagement.ViewModels.ViewModels;
 
 namespace HotelManagement.Data.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class NotificationRepository : INotificationRepository
     {
+        #region Declare Variables
         private readonly HotelDbContext _dbContext;
+        #endregion
 
-        public UserRepository(HotelDbContext context)
+        #region Constructor
+        public NotificationRepository(HotelDbContext context)
         {
             _dbContext = context;
         }
+        #endregion
 
-        public async Task<ResponseDto> GetUsers(UserReqDto req)
+        #region Methods
+
+        public async Task<ResponseDto> GetNotifications(NotificationReqDto req)
         {
             ResponseDto response = new ResponseDto();
             var jsonString = JsonSerializer.Serialize(req);
@@ -32,14 +38,14 @@ namespace HotelManagement.Data.Repositories
             };
 
             response = (await _dbContext.ResponseDto
-                .FromSqlRaw<ResponseDto>("EXEC APIGetUsers {0}", pJson)
+                .FromSqlRaw<ResponseDto>("EXEC APINotificationGet {0}", pJson)
                 .ToListAsync())
                 .FirstOrDefault();
 
             return response;
         }
 
-        public async Task<ResponseDto> AddUser(UserReqDto req)
+        public async Task<ResponseDto> MarkRead(NotificationReqDto req)
         {
             ResponseDto response = new ResponseDto();
             var jsonString = JsonSerializer.Serialize(req);
@@ -51,11 +57,13 @@ namespace HotelManagement.Data.Repositories
             };
 
             response = (await _dbContext.ResponseDto
-                .FromSqlRaw<ResponseDto>("EXEC APIAddUser {0}", pJson)
+                .FromSqlRaw<ResponseDto>("EXEC APINotificationMarkRead {0}", pJson)
                 .ToListAsync())
                 .FirstOrDefault();
 
             return response;
         }
+
+        #endregion
     }
 }

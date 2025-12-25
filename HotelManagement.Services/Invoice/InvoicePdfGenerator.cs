@@ -50,33 +50,93 @@ namespace HotelManagement.Services.Invoice
             return $"Invoices/{fileName}";
         }
 
+        // Hotel logo URL
+        private static readonly string HotelLogoUrl = "https://booking.dorwaila.com/wp-content/plugins/vikbooking/admin/resources/head1-old.png";
+        private static byte[]? _cachedLogoBytes = null;
+
+        private static byte[]? GetLogoBytes()
+        {
+            if (_cachedLogoBytes != null)
+                return _cachedLogoBytes;
+
+            try
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    httpClient.Timeout = TimeSpan.FromSeconds(10);
+                    _cachedLogoBytes = httpClient.GetByteArrayAsync(HotelLogoUrl).GetAwaiter().GetResult();
+                    return _cachedLogoBytes;
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
         static void ComposeHeader(IContainer container, string invoiceNumber, InvoiceData data)
         {
-            container.Row(row =>
+            container.Column(column =>
             {
-                row.RelativeItem().Column(column =>
+                // Logo and Hotel Name Row
+                column.Item().Row(row =>
                 {
-                    column.Item()
-                        .Text("HOTEL INVOICE")
-                        .Bold()
-                        .FontSize(28)
-                        .FontColor(Colors.Blue.Darken2);
-                    
-                    column.Item().PaddingTop(5).Text($"Invoice #: {invoiceNumber}")
-                        .FontSize(14)
-                        .FontColor(Colors.Grey.Darken1);
+                    // Left side - Logo
+                    row.ConstantItem(120).Column(logoCol =>
+                    {
+                        var logoBytes = GetLogoBytes();
+                        if (logoBytes != null)
+                        {
+                            logoCol.Item().Height(60).Image(logoBytes);
+                        }
+                    });
+
+                    // Center - Hotel Name
+                    row.RelativeItem().AlignCenter().Column(nameCol =>
+                    {
+                        nameCol.Item()
+                            .Text("DORWAILA")
+                            .Bold()
+                            .FontSize(32)
+                            .FontColor(Colors.Blue.Darken2);
+                        nameCol.Item().Text("Premium Hotel & Resort")
+                            .FontSize(12)
+                            .FontColor(Colors.Grey.Darken1);
+                    });
+
+                    // Right side - Date
+                    row.ConstantItem(120).AlignRight().Column(dateCol =>
+                    {
+                        dateCol.Item().Text($"Date: {DateTime.Now:dd MMM yyyy}")
+                            .FontSize(10);
+                    });
                 });
 
-                row.RelativeItem().Column(column =>
+                // Invoice Title Row
+                column.Item().PaddingTop(15).BorderTop(1).BorderColor(Colors.Grey.Lighten2).PaddingTop(10).Row(row =>
                 {
-                    column.Item().AlignRight().Text("Hotel Management System")
-                        .Bold()
-                        .FontSize(14);
-                    column.Item().AlignRight().Text("Your Premium Stay Partner")
-                        .FontSize(10)
-                        .FontColor(Colors.Grey.Darken1);
-                    column.Item().AlignRight().PaddingTop(5).Text($"Date: {DateTime.Now:dd MMM yyyy}")
-                        .FontSize(10);
+                    row.RelativeItem().Column(titleCol =>
+                    {
+                        titleCol.Item()
+                            .Text("HOTEL INVOICE")
+                            .Bold()
+                            .FontSize(24)
+                            .FontColor(Colors.Blue.Darken2);
+                        
+                        titleCol.Item().PaddingTop(5).Text($"Invoice #: {invoiceNumber}")
+                            .FontSize(14)
+                            .FontColor(Colors.Grey.Darken1);
+                    });
+
+                    row.ConstantItem(150).AlignRight().Column(contactCol =>
+                    {
+                        contactCol.Item().Text("Dorwaila Hotels")
+                            .Bold()
+                            .FontSize(12);
+                        contactCol.Item().Text("Your Premium Stay Partner")
+                            .FontSize(9)
+                            .FontColor(Colors.Grey.Darken1);
+                    });
                 });
             });
         }
@@ -242,7 +302,7 @@ namespace HotelManagement.Services.Invoice
         {
             container.AlignCenter().Padding(20).Column(column =>
             {
-                column.Item().Text("Thank you for staying with us!")
+                column.Item().Text("Thank you for staying at Dorwaila!")
                     .Bold()
                     .FontSize(14)
                     .FontColor(Colors.Blue.Darken2);

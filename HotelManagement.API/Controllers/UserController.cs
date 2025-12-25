@@ -21,5 +21,11 @@ namespace HotelManagement.API.Controllers
         {
             return Ok(await _service.GetUsers(req));
         }
+
+        [HttpPost("AddUser")]
+        public async Task<IActionResult> AddUser([FromBody] UserReqDto req)
+        {
+            return Ok(await _service.AddUser(req));
+        }
     }
 }

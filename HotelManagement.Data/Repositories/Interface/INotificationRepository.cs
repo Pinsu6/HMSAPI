@@ -4,9 +4,9 @@ using HotelManagement.ViewModels.RequestModels;
 
 namespace HotelManagement.Data.Repositories.Interface
 {
-    public interface IUserRepository
+    public interface INotificationRepository
     {
-        Task<ResponseDto> GetUsers(UserReqDto req);
-        Task<ResponseDto> AddUser(UserReqDto req);
+        Task<ResponseDto> GetNotifications(NotificationReqDto req);
+        Task<ResponseDto> MarkRead(NotificationReqDto req);
     }
 }

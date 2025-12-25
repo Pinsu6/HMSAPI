@@ -11,16 +11,22 @@ using HotelManagement.ViewModels.ViewModels;
 
 namespace HotelManagement.Data.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class HotelRepository : IHotelRepository
     {
+        #region Declare Variables
         private readonly HotelDbContext _dbContext;
+        #endregion
 
-        public UserRepository(HotelDbContext context)
+        #region Constructor
+        public HotelRepository(HotelDbContext context)
         {
             _dbContext = context;
         }
+        #endregion
 
-        public async Task<ResponseDto> GetUsers(UserReqDto req)
+        #region Methods
+
+        public async Task<ResponseDto> GetHotelInformation(HotelReqDto req)
         {
             ResponseDto response = new ResponseDto();
             var jsonString = JsonSerializer.Serialize(req);
@@ -32,14 +38,14 @@ namespace HotelManagement.Data.Repositories
             };
 
             response = (await _dbContext.ResponseDto
-                .FromSqlRaw<ResponseDto>("EXEC APIGetUsers {0}", pJson)
+                .FromSqlRaw<ResponseDto>("EXEC APIHotelInformationGet {0}", pJson)
                 .ToListAsync())
                 .FirstOrDefault();
 
             return response;
         }
 
-        public async Task<ResponseDto> AddUser(UserReqDto req)
+        public async Task<ResponseDto> InsertUpdateHotelInformation(HotelReqDto req)
         {
             ResponseDto response = new ResponseDto();
             var jsonString = JsonSerializer.Serialize(req);
@@ -51,11 +57,32 @@ namespace HotelManagement.Data.Repositories
             };
 
             response = (await _dbContext.ResponseDto
-                .FromSqlRaw<ResponseDto>("EXEC APIAddUser {0}", pJson)
+                .FromSqlRaw<ResponseDto>("EXEC APIHotelInformationInsertUpdate {0}", pJson)
                 .ToListAsync())
                 .FirstOrDefault();
 
             return response;
         }
+
+        public async Task<ResponseDto> DeleteHotelInformation(HotelReqDto req)
+        {
+            ResponseDto response = new ResponseDto();
+            var jsonString = JsonSerializer.Serialize(req);
+
+            SqlParameter pJson = new SqlParameter("@pJsonString", SqlDbType.NVarChar)
+            {
+                Size = int.MaxValue,
+                Value = jsonString
+            };
+
+            response = (await _dbContext.ResponseDto
+                .FromSqlRaw<ResponseDto>("EXEC APIHotelInformationDelete {0}", pJson)
+                .ToListAsync())
+                .FirstOrDefault();
+
+            return response;
+        }
+
+        #endregion
     }
 }

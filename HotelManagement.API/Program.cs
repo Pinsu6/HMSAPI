@@ -34,6 +34,10 @@ using HotelManagement.Services.Currency;
 using HotelManagement.Services.Currency.Interface;
 using HotelManagement.Services.AddServices;
 using HotelManagement.Services.AddServices.Interface;
+using HotelManagement.Services.Hotel;
+using HotelManagement.Services.Hotel.Interface;
+using HotelManagement.Services.Notification;
+using HotelManagement.Services.Notification.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,9 +54,11 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAll",
         builder =>
         {
-            builder.AllowAnyOrigin()
+            builder.SetIsOriginAllowed(_ => true) // Allow any origin
                    .AllowAnyMethod()
-                   .AllowAnyHeader();
+                   .AllowAnyHeader()
+                   .AllowCredentials() // Allow cookies/auth headers
+                   .WithExposedHeaders("Content-Disposition", "Content-Length", "X-Total-Count"); // Expose headers for file downloads etc.
         });
 });
 
@@ -119,21 +125,41 @@ builder.Services.AddScoped<IAddServicesRepository, AddServicesRepository>();
 builder.Services.AddScoped<IAddServicesManager, AddServicesManager>();
 builder.Services.AddScoped<IAddServicesService, AddServicesService>();
 
+builder.Services.AddScoped<IHotelRepository, HotelRepository>();
+builder.Services.AddScoped<IHotelManager, HotelManager>();
+builder.Services.AddScoped<IHotelService, HotelService>();
+
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+builder.Services.AddScoped<INotificationManager, NotificationManager>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// CORS must be the FIRST middleware to handle preflight requests before any redirect
+app.UseCors("AllowAll");
 
+// Configure the HTTP request pipeline.
+// Enable Swagger for all environments (not just development)
+app.UseSwagger();
+app.UseSwaggerUI();
+
+// Do NOT use HTTPS redirection - it causes preflight redirect issues
 //app.UseHttpsRedirection();
 
 // Enable serving static files (for Invoice PDFs)
 app.UseStaticFiles();
 
-app.UseCors("AllowAll");
+// Handle OPTIONS preflight requests explicitly
+app.Use(async (context, next) =>
+{
+    if (context.Request.Method == "OPTIONS")
+    {
+        context.Response.StatusCode = 200;
+        await context.Response.CompleteAsync();
+        return;
+    }
+    await next();
+});
 
 app.UseAuthorization();
 
