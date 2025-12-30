@@ -8,5 +8,6 @@ namespace HotelManagement.Services.RoomType.Interface
     {
         Task<ResponseDto> GetRoomTypes(RoomTypeReqDto req);
         Task<ResponseDto> InsertUpdateRoomType(RoomTypeReqDto req);
+        Task<ResponseDto> DeleteRoomType(RoomTypeReqDto req);
     }
 }

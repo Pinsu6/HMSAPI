@@ -11,16 +11,22 @@ using HotelManagement.ViewModels.ViewModels;
 
 namespace HotelManagement.Data.Repositories
 {
-    public class RoomTypeRepository : IRoomTypeRepository
+    public class FloorRepository : IFloorRepository
     {
+        #region Declare Variables
         private readonly HotelDbContext _dbContext;
+        #endregion
 
-        public RoomTypeRepository(HotelDbContext context)
+        #region Constructor
+        public FloorRepository(HotelDbContext context)
         {
             _dbContext = context;
         }
+        #endregion
 
-        public async Task<ResponseDto> GetRoomTypes(RoomTypeReqDto req)
+        #region Methods
+
+        public async Task<ResponseDto> GetFloors(FloorReqDto req)
         {
             ResponseDto response = new ResponseDto();
             var jsonString = JsonSerializer.Serialize(req);
@@ -32,14 +38,14 @@ namespace HotelManagement.Data.Repositories
             };
 
             response = (await _dbContext.ResponseDto
-                .FromSqlRaw<ResponseDto>("EXEC APIRoomTypeGet {0}", pJson)
+                .FromSqlRaw<ResponseDto>("EXEC APIFloorGet {0}", pJson)
                 .ToListAsync())
                 .FirstOrDefault();
 
             return response;
         }
 
-        public async Task<ResponseDto> InsertUpdateRoomType(RoomTypeReqDto req)
+        public async Task<ResponseDto> AddFloor(FloorReqDto req)
         {
             ResponseDto response = new ResponseDto();
             var jsonString = JsonSerializer.Serialize(req);
@@ -51,14 +57,14 @@ namespace HotelManagement.Data.Repositories
             };
 
             response = (await _dbContext.ResponseDto
-                .FromSqlRaw<ResponseDto>("EXEC APIRoomTypeInsertUpdate {0}", pJson)
+                .FromSqlRaw<ResponseDto>("EXEC APIAddFloor {0}", pJson)
                 .ToListAsync())
                 .FirstOrDefault();
 
             return response;
         }
 
-        public async Task<ResponseDto> DeleteRoomType(RoomTypeReqDto req)
+        public async Task<ResponseDto> DeleteFloor(FloorReqDto req)
         {
             ResponseDto response = new ResponseDto();
             var jsonString = JsonSerializer.Serialize(req);
@@ -70,11 +76,13 @@ namespace HotelManagement.Data.Repositories
             };
 
             response = (await _dbContext.ResponseDto
-                .FromSqlRaw<ResponseDto>("EXEC APIRoomTypeDelete {0}", pJson)
+                .FromSqlRaw<ResponseDto>("EXEC APIFloorDelete {0}", pJson)
                 .ToListAsync())
                 .FirstOrDefault();
 
             return response;
         }
+
+        #endregion
     }
 }

@@ -38,6 +38,10 @@ using HotelManagement.Services.Hotel;
 using HotelManagement.Services.Hotel.Interface;
 using HotelManagement.Services.Notification;
 using HotelManagement.Services.Notification.Interface;
+using HotelManagement.Services.Tax;
+using HotelManagement.Services.Tax.Interface;
+using HotelManagement.Services.Floor;
+using HotelManagement.Services.Floor.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -132,6 +136,14 @@ builder.Services.AddScoped<IHotelService, HotelService>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 builder.Services.AddScoped<INotificationManager, NotificationManager>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+
+builder.Services.AddScoped<ITaxRepository, TaxRepository>();
+builder.Services.AddScoped<ITaxManager, TaxManager>();
+builder.Services.AddScoped<ITaxService, TaxService>();
+
+builder.Services.AddScoped<IFloorRepository, FloorRepository>();
+builder.Services.AddScoped<IFloorManager, FloorManager>();
+builder.Services.AddScoped<IFloorService, FloorService>();
 
 var app = builder.Build();
 

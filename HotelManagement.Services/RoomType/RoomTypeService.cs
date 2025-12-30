@@ -24,5 +24,10 @@ namespace HotelManagement.Services.RoomType
         {
             return _manager.InsertUpdateRoomType(req);
         }
+
+        public Task<ResponseDto> DeleteRoomType(RoomTypeReqDto req)
+        {
+            return _manager.DeleteRoomType(req);
+        }
     }
 }

@@ -11,16 +11,22 @@ using HotelManagement.ViewModels.ViewModels;
 
 namespace HotelManagement.Data.Repositories
 {
-    public class RoomTypeRepository : IRoomTypeRepository
+    public class TaxRepository : ITaxRepository
     {
+        #region Declare Variables
         private readonly HotelDbContext _dbContext;
+        #endregion
 
-        public RoomTypeRepository(HotelDbContext context)
+        #region Constructor
+        public TaxRepository(HotelDbContext context)
         {
             _dbContext = context;
         }
+        #endregion
 
-        public async Task<ResponseDto> GetRoomTypes(RoomTypeReqDto req)
+        #region Methods
+
+        public async Task<ResponseDto> GetTax(TaxReqDto req)
         {
             ResponseDto response = new ResponseDto();
             var jsonString = JsonSerializer.Serialize(req);
@@ -32,14 +38,14 @@ namespace HotelManagement.Data.Repositories
             };
 
             response = (await _dbContext.ResponseDto
-                .FromSqlRaw<ResponseDto>("EXEC APIRoomTypeGet {0}", pJson)
+                .FromSqlRaw<ResponseDto>("EXEC APIGetTax {0}", pJson)
                 .ToListAsync())
                 .FirstOrDefault();
 
             return response;
         }
 
-        public async Task<ResponseDto> InsertUpdateRoomType(RoomTypeReqDto req)
+        public async Task<ResponseDto> AddTax(TaxReqDto req)
         {
             ResponseDto response = new ResponseDto();
             var jsonString = JsonSerializer.Serialize(req);
@@ -51,14 +57,14 @@ namespace HotelManagement.Data.Repositories
             };
 
             response = (await _dbContext.ResponseDto
-                .FromSqlRaw<ResponseDto>("EXEC APIRoomTypeInsertUpdate {0}", pJson)
+                .FromSqlRaw<ResponseDto>("EXEC APIAddTax {0}", pJson)
                 .ToListAsync())
                 .FirstOrDefault();
 
             return response;
         }
 
-        public async Task<ResponseDto> DeleteRoomType(RoomTypeReqDto req)
+        public async Task<ResponseDto> DeleteTax(TaxReqDto req)
         {
             ResponseDto response = new ResponseDto();
             var jsonString = JsonSerializer.Serialize(req);
@@ -70,11 +76,13 @@ namespace HotelManagement.Data.Repositories
             };
 
             response = (await _dbContext.ResponseDto
-                .FromSqlRaw<ResponseDto>("EXEC APIRoomTypeDelete {0}", pJson)
+                .FromSqlRaw<ResponseDto>("EXEC APIDeleteTax {0}", pJson)
                 .ToListAsync())
                 .FirstOrDefault();
 
             return response;
         }
+
+        #endregion
     }
 }

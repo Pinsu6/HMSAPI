@@ -27,5 +27,11 @@ namespace HotelManagement.API.Controllers
         {
             return Ok(await _service.InsertUpdateRoomType(req));
         }
+
+        [HttpPost("deleteRoomType")]
+        public async Task<IActionResult> DeleteRoomType([FromBody] RoomTypeReqDto req)
+        {
+            return Ok(await _service.DeleteRoomType(req));
+        }
     }
 }
