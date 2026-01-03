@@ -42,6 +42,8 @@ using HotelManagement.Services.Tax;
 using HotelManagement.Services.Tax.Interface;
 using HotelManagement.Services.Floor;
 using HotelManagement.Services.Floor.Interface;
+using HotelManagement.Services.WiFi;
+using HotelManagement.Services.WiFi.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -144,6 +146,10 @@ builder.Services.AddScoped<ITaxService, TaxService>();
 builder.Services.AddScoped<IFloorRepository, FloorRepository>();
 builder.Services.AddScoped<IFloorManager, FloorManager>();
 builder.Services.AddScoped<IFloorService, FloorService>();
+
+builder.Services.AddScoped<IWiFiRepository, WiFiRepository>();
+builder.Services.AddScoped<IWiFiManager, WiFiManager>();
+builder.Services.AddScoped<IWiFiService, WiFiService>();
 
 var app = builder.Build();
 

@@ -9,10 +9,12 @@ namespace HotelManagement.Business.Manager
     public class BookingManager : IBookingManager
     {
         private readonly IBookingRepository _repo;
+        private readonly IWiFiManager _wifiManager;
 
-        public BookingManager(IBookingRepository repo)
+        public BookingManager(IBookingRepository repo, IWiFiManager wifiManager)
         {
             _repo = repo;
+            _wifiManager = wifiManager;
         }
 
         public Task<ResponseDto> GetBookings(BookingReqDto req)
@@ -20,14 +22,46 @@ namespace HotelManagement.Business.Manager
             return _repo.GetBookings(req);
         }
 
-        public Task<ResponseDto> InsertUpdateBooking(BookingReqDto req)
+        public async Task<ResponseDto> InsertUpdateBooking(BookingReqDto req)
         {
-            return _repo.InsertUpdateBooking(req);
+            var response = await _repo.InsertUpdateBooking(req);
+
+            // If check-in successful, trigger Wi-Fi creation
+            if (response != null && req.Status == "Checked-In")
+            {
+                // Simple logic to generate Username/Password
+                string generatedUsername = "R" + req.RoomId; 
+                string generatedPassword = new System.Random().Next(100000, 999999).ToString();
+
+                await _wifiManager.CreateGuest(new WiFiReqDto
+                {
+                    BookingId = req.BookingId,
+                    RoomNumber = req.RoomId?.ToString(),
+                    Username = generatedUsername,
+                    PasswordHash = generatedPassword,
+                    ExpiryTime = req.ExpectedCheckOutTime,
+                    Status = "Active"
+                });
+            }
+
+            return response;
         }
 
-        public Task<ResponseDto> CheckOutBooking(BookingReqDto req)
+        public async Task<ResponseDto> CheckOutBooking(BookingReqDto req)
         {
-            return _repo.CheckOutBooking(req);
+            var response = await _repo.CheckOutBooking(req);
+
+            // If check-out successful, trigger Wi-Fi expiration
+            if (response != null)
+            {
+                await _wifiManager.ExpireGuest(new WiFiReqDto
+                {
+                    BookingId = req.BookingId,
+                    RoomNumber = req.RoomId?.ToString()
+                });
+            }
+
+            return response;
         }
     }
 }
